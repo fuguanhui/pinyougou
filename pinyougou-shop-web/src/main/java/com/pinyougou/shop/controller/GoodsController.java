@@ -52,7 +52,7 @@ public class GoodsController {
 	public Result add(@RequestBody Goods goods){
 		//获取商家ID
 		String sellerId = SecurityContextHolder.getContext().getAuthentication().getName();
-		goods.getGoods().setSellerId(sellerId);//设置商家 ID
+		goods.getGoods().setSellerId(sellerId);//设置商家ID
 		
 		try {
 			goodsService.add(goods);
@@ -114,6 +114,10 @@ public class GoodsController {
 	 */
 	@RequestMapping("/search")
 	public PageResult search(@RequestBody TbGoods goods, int page, int rows  ){
+		//获取商家 ID
+		String sellerId = SecurityContextHolder.getContext().getAuthentication().getName();
+		//添加查询条件
+		goods.setSellerId(sellerId);
 		return goodsService.findPage(goods, page, rows);		
 	}
 	
