@@ -1,6 +1,6 @@
 //控制层 
-app.controller('goodsController', function($scope, $controller, goodsService,
-		uploadService, itemCatService, typeTemplateService) {
+app.controller('goodsController', function($scope, $controller, $location,
+		goodsService, uploadService, itemCatService, typeTemplateService) {
 
 	$controller('baseController', {
 		$scope : $scope
@@ -22,9 +22,26 @@ app.controller('goodsController', function($scope, $controller, goodsService,
 	}
 
 	// 查询实体
-	$scope.findOne = function(id) {
+	$scope.findOne = function() {
+		var id = $location.search()['id'];// 获取参数值
+		if (id == null) {
+			return;
+		}
 		goodsService.findOne(id).success(function(response) {
-			$scope.entity = response;
+			$scope.entity= response;
+			
+			editor.html($scope.entity.goodsDesc.introduction );//商品介绍 
+			//商品图片
+			$scope.entity.goodsDesc.itemImages=JSON.parse($scope.entity.goodsDesc.itemImages);
+			//扩展属性
+			$scope.entity.goodsDesc.customAttributeItems=JSON.parse($scope.entity.goodsDesc.customAttributeItems);
+			//规格选择
+			$scope.entity.goodsDesc.specificationItems= JSON.parse($scope.entity.goodsDesc.specificationItems);
+			//转换sku列表中的规格对象
+			
+			for(var i=0;i< $scope.entity.itemList.length;i++ ){
+				$scope.entity.itemList[i].spec=  JSON.parse($scope.entity.itemList[i].spec);					
+			}
 		});
 	}
 
@@ -155,9 +172,11 @@ app.controller('goodsController', function($scope, $controller, goodsService,
 
 					$scope.typeTemplate.brandIds = JSON
 							.parse($scope.typeTemplate.brandIds);// 品牌列表类型转换
-					// 扩展属性
-					$scope.entity.goodsDesc.customAttributeItems = JSON
-							.parse($scope.typeTemplate.customAttributeItems);
+					//如果没有 ID，则加载模板中的扩展数据
+					if($location.search()['id']==null){
+					$scope.entity.goodsDesc.customAttributeItems = 
+					JSON.parse($scope.typeTemplate.customAttributeItems);//扩展属性
+					}
 				});
 		// 读取规格
 		typeTemplateService.findSpecList(newValue).success(function(response) {
