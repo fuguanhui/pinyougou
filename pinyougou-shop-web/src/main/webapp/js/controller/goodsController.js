@@ -1,6 +1,5 @@
 //控制层 
-app
-		.controller(
+app.controller(
 				'goodsController',
 				function($scope, $controller, $location, goodsService,
 						uploadService, itemCatService, typeTemplateService) {
@@ -69,8 +68,7 @@ app
 						serviceObject.success(function(response) {
 							if (response.success) {
 								alert("保存成功");
-								$scope.entity = {};
-								editor.html("");// 清空富文本编辑器
+								location.href="goods.html";//跳转到商品列表页
 							} else {
 								alert(response.message);
 							}
@@ -166,8 +164,7 @@ app
 					});
 
 					// 读取模板ID
-					$scope
-							.$watch(
+					$scope.$watch(
 									'entity.goods.category3Id',
 									function(newValue, oldValue) {
 
@@ -180,8 +177,7 @@ app
 									});
 
 					// 读取模板ID后，读取品牌列表 扩展属性 规格列表
-					$scope
-							.$watch(
+					$scope.$watch(
 									'entity.goods.typeTemplateId',
 									function(newValue, oldValue) {
 										typeTemplateService
